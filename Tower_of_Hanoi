@@ -1,0 +1,99 @@
+#Iterative Towers of Hanoi
+INT_MIN = -723489710
+
+class Stack:
+   def __init__(self, size):
+      self.size = size
+      self.top = -1
+      self.arr = []
+
+   # to check if the stack is full
+   def isFull(self, stack):
+      return stack.top == stack.size - 1
+
+   # to check if the stack is empty
+   def isEmpty(self, stack):
+      return stack.top == -1
+
+   # Insertion in Stack
+   def push(self, stack, item):
+      if self.isFull(stack):
+         return
+      stack.top+=1
+      stack.arr.append(item)
+
+   # Deletion from Stack
+   def pop(self, stack):
+      if self.isEmpty(stack):
+         return INT_MIN
+      stack.top-=1
+      return stack.arr.pop()
+
+   def DiskMovement(self, src, dest, s, d):
+      pole1 = self.pop(src);
+      pole2 = self.pop(dest);
+
+      # When pole 1 is empty
+      if(pole1 == INT_MIN):
+         self.push(src, pole2)
+         self.Movement(d, s, pole2)
+
+      # When pole2 pole is empty
+      elif (pole2 == INT_MIN):
+         self.push(dest, pole1)
+         self.Movement(s, d, pole1)
+
+      # When top disk of pole1 > top disk of pole2
+      elif (pole1 > pole2):
+         self.push(src, pole1)
+         self.push(src, pole2)
+         self.Movement(d, s, pole2)
+
+      # When top disk of pole1 < top disk of pole2
+      else:
+         self.push(dest, pole2)
+         self.push(dest, pole1)
+         self.Movement(s, d, pole1)
+
+   # Function to show the Movementment of disks
+   def Movement(self, source, destination, disk):
+      print("Move the disk "+str(disk)+" from "+source+" to " + destination)
+
+   # Implementation
+   def Iterative(self, num, src, aux, dest):
+      s, d, a = 'S', 'D', 'A'
+
+      # Rules in algorithm will be followed
+      if num % 2 == 0:
+         temp = d
+         d = a
+         a = temp
+
+      total_count = int(pow(2, num) - 1)
+
+      # disks with large diameter are pushed first
+      i = num
+      while(i>=1):
+         self.push(src, i)
+         i-=1
+      i = 1
+      while(i <= total_count):
+         if (i % 3 == 1):
+            self.DiskMovement(src, dest, s, d)
+         elif (i % 3 == 2):
+            self.DiskMovement(src, aux, s, a)
+         elif (i % 3 == 0):
+            self.DiskMovement(aux, dest, a, d)
+         i+=1
+
+# number of disks
+num = 3
+
+# stacks created for src , dest, aux
+src = Stack(num)
+dest = Stack(num)
+aux = Stack(num)
+
+# solution for 3 disks
+sol = Stack(0)
+sol.Iterative(num, src, aux, dest)
